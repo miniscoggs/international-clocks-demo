@@ -33,7 +33,8 @@ const ClockCard = ({ timezone, onRemove }) => {
 
   // datetime fetch function for use on initial call and interval lag correction
   const fetchDatetime = useCallback(() => {
-    apiClient.timezone(timezone, cancelToken).then(({ data: { datetime, timezone: timezoneResponse } }) => {
+    const apiRequest = timezone === 'Local' ? apiClient.ip(cancelToken) : apiClient.timezone(timezone, cancelToken);
+    apiRequest.then(({ data: { datetime, timezone: timezoneResponse } }) => {
       setDatetime({
         name: timezone,
         timezone: timezoneResponse,
@@ -84,7 +85,7 @@ const ClockCard = ({ timezone, onRemove }) => {
           <>
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
-                {datetime.name}
+                {datetime.name !== 'Local' ? datetime.name : `${datetime.name} - (${datetime.timezone})`}
               </Typography>
               <Typography>
                 {datetime.datetimeObject.toLocaleTimeString('en-GB', { timeZone: datetime.timezone })}

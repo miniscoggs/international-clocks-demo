@@ -51,6 +51,17 @@ export default class WorldTimeApiClient {
   }
 
   /**
+   * Access ip endpoint to get time for current ip.
+   *
+   * @param {Object} cancelToken - cancel token for axios
+   *
+   * @return {axios} An axios promise chain instance
+   */
+  ip(cancelToken) {
+    return this.#makeRequest('GET', 'ip', cancelToken);
+  }
+
+  /**
    * Make actual request to WorldTimeApi
    *
    * @param {string} method - HTTP method for request

@@ -14,7 +14,7 @@ import ClockCard from '../components/ClockCard';
  * Index page for displaying international times.
  */
 const Index = () => {
-  const [displayTimezones, setDisplayTimezones] = useState([]);
+  const [displayTimezones, setDisplayTimezones] = useState(['Local']);
 
   return (
     <>
