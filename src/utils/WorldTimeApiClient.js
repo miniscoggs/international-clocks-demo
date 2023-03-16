@@ -39,6 +39,18 @@ export default class WorldTimeApiClient {
   }
 
   /**
+   * Access timezone endpoint
+   *
+   * @param {string} timezone - The timezone to fetch the time for
+   * @param {Object} cancelToken - cancel token for axios
+   *
+   * @return {axios} An axios promise chain instance
+   */
+  timezone(timezone, cancelToken) {
+    return this.#makeRequest('GET', `timezone/${timezone}`, cancelToken);
+  }
+
+  /**
    * Make actual request to WorldTimeApi
    *
    * @param {string} method - HTTP method for request
