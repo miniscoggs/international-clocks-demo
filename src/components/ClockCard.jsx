@@ -31,8 +31,8 @@ const ClockCard = ({ timezone, onRemove }) => {
 
   const [datetime, setDatetime] = useState(null);
 
-  // Fetch inital time
-  useEffect(() => {
+  // datetime fetch function for use on initial call and interval lag correction
+  const fetchDatetime = useCallback(() => {
     apiClient.timezone(timezone, cancelToken).then(({ data: { datetime, timezone: timezoneResponse } }) => {
       setDatetime({
         name: timezone,
@@ -43,6 +43,38 @@ const ClockCard = ({ timezone, onRemove }) => {
       // for demo just put errors into console
       console.error(error);
     });
+  }, [apiClient, timezone, cancelToken]);
+
+  // Fetch inital time
+  useEffect(() => {
+    fetchDatetime();
+  }, []);
+
+  // tick current clock
+  useEffect(() => {
+    // Create an interval for ticking time
+    const tickIntervalId = setInterval(() => {
+        setDatetime((prevDatetime) => {
+          if (prevDatetime) {
+            const newDatetime = { ...prevDatetime };
+            newDatetime.datetimeObject.setSeconds(newDatetime.datetimeObject.getSeconds() + 1);
+            return newDatetime;
+          } else {
+            return null;
+          }
+        });
+    }, 1000);
+
+    // Create an interval for fixing the lag between inaccurate interval ticking and actual time
+    const lagIntervalId = setInterval(() => {
+      fetchDatetime();
+    }, 60000);
+
+    // on unmount clearIntervals
+    return () => {
+      clearInterval(tickIntervalId)
+      clearInterval(lagIntervalId)
+    };
   }, []);
 
   return (
